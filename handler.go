@@ -36,8 +36,8 @@ func (t *Transport) socketHandler(res http.ResponseWriter, req *http.Request) {
 	delete(t.sessions, uid)
 }
 
-// redirect :
-func (t *Transport) redirectHandler(res http.ResponseWriter, req *http.Request) {
+// ServerHTTP :
+func (t *Transport) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	if t.notFoundHandler != nil {
 		t.notFoundHandler(res, req)
 		return

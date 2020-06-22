@@ -38,7 +38,6 @@ func (t *Transport) Start() error {
 	}
 
 	http.HandleFunc(t.path, t.socketHandler)
-	http.HandleFunc("*", t.redirectHandler)
 	addr := fmt.Sprintf(":%d", t.port)
-	return http.ListenAndServe(addr, nil)
+	return http.ListenAndServe(addr, t)
 }
