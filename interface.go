@@ -10,12 +10,12 @@ import (
 
 // Transport Definition
 const (
-	TransportName = "GORILLA_WEBSOCKET"
+	TransportID oscrud.TransportID = "GORILLA_WEBSOCKET"
 )
 
 // Name :
-func (t *Transport) Name() string {
-	return TransportName
+func (t *Transport) Name() oscrud.TransportID {
+	return TransportID
 }
 
 // Register :
@@ -26,15 +26,15 @@ func (t *Transport) Register(method string, endpoint string, handler oscrud.Tran
 // Start :
 func (t *Transport) Start() error {
 	if t.authHandler == nil {
-		return errors.New(TransportName + ": authHandler cannot be null")
+		return errors.New("websocket: authHandler cannot be null")
 	}
 
 	if t.errorHandler == nil {
-		return errors.New(TransportName + ": errorHandler cannot be null")
+		return errors.New("websocket: errorHandler cannot be null")
 	}
 
 	if t.handler == nil {
-		return errors.New(TransportName + ": handler cannot be null")
+		return errors.New("websocket: handler cannot be null")
 	}
 
 	http.HandleFunc(t.path, t.socketHandler)
