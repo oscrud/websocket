@@ -32,5 +32,7 @@ func (t *Transport) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		}
 		t.handler(messageType, message, session)
 	}
+
+	go t.closeHandler(session)
 	delete(t.sessions, uid)
 }

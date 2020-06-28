@@ -11,6 +11,7 @@ Websocket transport for oscrud and build using [gorilla_websocket](https://githu
 | UseErrorHandler(handler ErrorHandler)       | Customize error handler instead using default      |
 | UseHandler(handler Handler)                 | Customize message handler and it's required        |
 | UseAuthHandler(handler AuthHandler)         | Customize auth handler instead using default       |
+| UseCloseHandler(handler CloseHandler)       | Customize close handler will run in goroutine      |
 | GetSession(key string)                      | Get session by id                                  |
 | UpdateSession(key string, session *Session) | Update session by id                               |
 

@@ -13,6 +13,7 @@ type Transport struct {
 	handler      Handler
 	errorHandler ErrorHandler
 	authHandler  AuthHandler
+	closeHandler CloseHandler
 	upgrader     websocket.Upgrader
 	sessions     map[string]*Session
 }
@@ -26,12 +27,16 @@ type AuthHandler func(http.ResponseWriter, *http.Request) (string, *Session, err
 // ErrorHandler :
 type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 
+// CloseHandler :
+type CloseHandler func(*Session)
+
 // NewWebsocket :
 func NewWebsocket() *Transport {
 	return &Transport{
-		port:     3000,
-		upgrader: websocket.Upgrader{},
-		sessions: make(map[string]*Session),
+		port:         3000,
+		upgrader:     websocket.Upgrader{},
+		sessions:     make(map[string]*Session),
+		closeHandler: func(session *Session) {},
 		authHandler: func(res http.ResponseWriter, req *http.Request) (string, *Session, error) {
 			return uuid.New().String(), nil, nil
 		},
@@ -63,6 +68,12 @@ func (t *Transport) UseErrorHandler(handler ErrorHandler) *Transport {
 // UseHandler :
 func (t *Transport) UseHandler(handler Handler) *Transport {
 	t.handler = handler
+	return t
+}
+
+// UseCloseHandler :
+func (t *Transport) UseCloseHandler(handler CloseHandler) *Transport {
+	t.closeHandler = handler
 	return t
 }
 
