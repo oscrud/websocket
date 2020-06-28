@@ -10,8 +10,6 @@ import (
 // Transport :
 type Transport struct {
 	port         int
-	path         string
-	redirect     bool
 	handler      Handler
 	errorHandler ErrorHandler
 	authHandler  AuthHandler
@@ -53,12 +51,6 @@ func (t *Transport) UsePort(port int) *Transport {
 // UseUpgrader :
 func (t *Transport) UseUpgrader(upgrader websocket.Upgrader) *Transport {
 	t.upgrader = upgrader
-	return t
-}
-
-// UseRedirect :
-func (t *Transport) UseRedirect(redirect bool) *Transport {
-	t.redirect = redirect
 	return t
 }
 
