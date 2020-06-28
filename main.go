@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -10,27 +9,31 @@ import (
 
 // Transport :
 type Transport struct {
-	port            int
-	path            string
-	redirect        bool
-	handler         func(messageType int, message []byte, session *Session)
-	notFoundHandler func(http.ResponseWriter, *http.Request)
-	errorHandler    func(http.ResponseWriter, *http.Request, error)
-	authHandler     func(http.ResponseWriter, *http.Request) (string, *Session, error)
-	upgrader        websocket.Upgrader
-	sessions        map[string]*Session
+	port         int
+	path         string
+	redirect     bool
+	handler      Handler
+	errorHandler ErrorHandler
+	authHandler  AuthHandler
+	upgrader     websocket.Upgrader
+	sessions     map[string]*Session
 }
+
+// Handler :
+type Handler func(messageType int, message []byte, fromSession *Session)
+
+// AuthHandler :
+type AuthHandler func(http.ResponseWriter, *http.Request) (string, *Session, error)
+
+// ErrorHandler :
+type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 
 // NewWebsocket :
 func NewWebsocket() *Transport {
 	return &Transport{
-		port:            3000,
-		path:            "/ws",
-		redirect:        true,
-		notFoundHandler: nil,
-		handler:         nil,
-		upgrader:        websocket.Upgrader{},
-		sessions:        make(map[string]*Session),
+		port:     3000,
+		upgrader: websocket.Upgrader{},
+		sessions: make(map[string]*Session),
 		authHandler: func(res http.ResponseWriter, req *http.Request) (string, *Session, error) {
 			return uuid.New().String(), nil, nil
 		},
@@ -59,30 +62,21 @@ func (t *Transport) UseRedirect(redirect bool) *Transport {
 	return t
 }
 
-// UseNotFoundHandler :
-func (t *Transport) UseNotFoundHandler(notFoundHandler func(http.ResponseWriter, *http.Request)) *Transport {
-	t.notFoundHandler = notFoundHandler
-	return t
-}
-
 // UseErrorHandler :
-func (t *Transport) UseErrorHandler(errorHandler func(http.ResponseWriter, *http.Request, error)) *Transport {
-	t.errorHandler = errorHandler
+func (t *Transport) UseErrorHandler(handler ErrorHandler) *Transport {
+	t.errorHandler = handler
 	return t
 }
 
 // UseHandler :
-func (t *Transport) UseHandler(handler func(messageType int, message []byte, fromSession *Session)) *Transport {
+func (t *Transport) UseHandler(handler Handler) *Transport {
 	t.handler = handler
 	return t
 }
 
-// UsePath :
-func (t *Transport) UsePath(path string) *Transport {
-	if !strings.HasPrefix(path, "/") {
-		path = "/" + path
-	}
-	t.path = path
+// UseAuthHandler :
+func (t *Transport) UseAuthHandler(handler AuthHandler) *Transport {
+	t.authHandler = handler
 	return t
 }
 

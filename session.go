@@ -7,7 +7,17 @@ import (
 // Session :
 type Session struct {
 	Socket *websocket.Conn
-	Custom map[string]interface{}
+	State  map[string]interface{}
+}
+
+// Get :
+func (s *Session) Get(key string) interface{} {
+	return s.State[key]
+}
+
+// Set :
+func (s *Session) Set(key string, data interface{}) {
+	s.State[key] = data
 }
 
 // SendJSON :

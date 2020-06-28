@@ -37,7 +37,6 @@ func (t *Transport) Start() error {
 		return errors.New("websocket: handler cannot be null")
 	}
 
-	http.HandleFunc(t.path, t.socketHandler)
 	addr := fmt.Sprintf(":%d", t.port)
 	return http.ListenAndServe(addr, t)
 }
