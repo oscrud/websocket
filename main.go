@@ -30,8 +30,8 @@ type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 // CloseHandler :
 type CloseHandler func(*Session)
 
-// NewWebsocket :
-func NewWebsocket() *Transport {
+// New :
+func New() *Transport {
 	return &Transport{
 		port:         3000,
 		upgrader:     websocket.Upgrader{},
