@@ -8,6 +8,9 @@ import (
 	"github.com/oscrud/oscrud"
 )
 
+// Interface checking
+var _ oscrud.Transport = &Transport{}
+
 // Transport Definition
 const (
 	TransportID oscrud.TransportID = "GORILLA_WEBSOCKET"
@@ -16,6 +19,11 @@ const (
 // Name :
 func (t *Transport) Name() oscrud.TransportID {
 	return TransportID
+}
+
+// Request :
+func (t *Transport) Request(request *oscrud.Request, response interface{}) error {
+	return oscrud.ErrTransportNotSupport
 }
 
 // Register :
